@@ -10,12 +10,9 @@ avatars = UploadSet('avatars', IMAGES)
 
 settings_profile_blueprint = Blueprint('settings_profile', __name__)
 
-def get_random_filename(original_filename):
-    # Extract the file extension
-    _, ext = os.path.splitext(original_filename)
-    # Generate a UUID string
-    random_name = f"{uuid.uuid4().hex}{ext}"
-    return random_name
+def get_random_filename(filename):
+    ext = os.path.splitext(filename)[1]
+    return f"{uuid.uuid4().hex}{ext}"
 
 @settings_profile_blueprint.route('/update_public_info', methods=['GET', 'POST'])
 @login_required
@@ -48,7 +45,8 @@ def update_public_info():
                 flash('Max file size is 5MB', 'error')
                 return redirect(url_for('views.settings'))
             try:
-                filename = avatars.save(profile_pict)
+                filename = get_random_filename(profile_pict.filename)
+                filename = avatars.save(profile_pict, name=filename)
                 update_fields.append('profile_pict = ?')
                 params.append(filename)
                 if current_user.profile_pict:
@@ -110,4 +108,39 @@ def update_private_info():
                 return redirect(url_for('views.settings'))
         else:
             flash('No changes to update.', 'info')
+    return redirect(url_for('views.settings'))
+
+@settings_profile_blueprint.route('/update_password', methods=['GET', 'POST'])
+@login_required
+def update_password():
+    if request.method == 'POST':
+        if request.form.get('csrf_token') != session.get('csrf_token'):
+            flash('Invalid Token!', 'error')
+            return redirect(url_for('views.settings'))
+        
+        current_password = request.form['current_password']
+        new_password = request.form['new_password']
+        verify_field_password = request.form['verify_password']
+        
+        if current_password and new_password and verify_field_password:
+            if not (verify_password(current_user.password_hash, current_password)):
+                flash('Current password is incorrect.', 'error')
+                return redirect(url_for('views.settings'))
+            
+            if new_password != verify_field_password:
+                flash('New passwords do not match.', 'error')
+                return redirect(url_for('views.settings'))
+        
+            new_password = hash_password(new_password)
+            sql = "UPDATE users SET password_hash = '"+str(new_password)+"' WHERE id = "+str(current_user.id)
+            try:
+                with get_db() as db:
+                    db.execute(sql)
+                db.commit()
+                flash('Successfully updated your password.', 'success')
+            except Exception as e:
+                flash('Failed to update your password.'+str(e), 'error')
+                return redirect(url_for('views.settings'))
+        else:
+            flash('All field must be filled.', 'error')
     return redirect(url_for('views.settings'))

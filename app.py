@@ -11,6 +11,7 @@ from flask_uploads import UploadSet, configure_uploads, IMAGES, ALL
 from controllers.settings_profile import avatars
 from config import Config
 
+
 app = Flask(__name__, template_folder='templates', static_folder='static')
 
 app.register_blueprint(auth_blueprint)
@@ -38,10 +39,20 @@ def load_user(user_id):
             return User(user_dict)
     return None
 
+@app.template_filter('truncate_word')
+def truncate_word(s, length=10):
+    if len(s) > length:
+        return s[:length] + '...'
+    return s
+
 # Main Routes
 @app.route('/')
 def index():
     return redirect(url_for('views.dashboard'))
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
 
 if __name__ == '__main__':
     init_db()
