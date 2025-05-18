@@ -1,0 +1,85 @@
+<nav id="sidebar" class="sidebar js-sidebar">
+  <div class="sidebar-content js-simplebar">
+    <a class="sidebar-brand" href="#">
+      <span class="sidebar-brand-text align-middle"> SPD </span>
+    </a>
+    <div class="sidebar-user">
+      <div class="d-flex justify-content-center">
+        <div class="flex-shrink-0">
+          <img
+            class="avatar img-fluid rounded me-1"
+            src="{{url_for('static', filename='uploads/avatars/'+(current_user.profile_pict or 'default.jpg'))}}"
+            alt="Profile Picture"
+          />
+        </div>
+        <div class="flex-grow-1 ps-2">
+          <a
+            class="sidebar-user-title dropdown-toggle"
+            href="#"
+            data-bs-toggle="dropdown"
+          >
+            {{current_user.name}}
+          </a>
+          <div class="dropdown-menu dropdown-menu-start">
+            <a class="dropdown-item" href="{{url_for('views.profile')}}">
+              <i class="align-middle me-1" data-feather="user"></i>
+              Profile
+            </a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{{url_for('views.settings')}}">
+              <i class="align-middle me-1" data-feather="settings"></i>
+              Settings & Privacy
+            </a>
+            <a class="dropdown-item" href="#">
+              <i class="align-middle me-1" data-feather="help-circle"></i>
+              Help Center
+            </a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="{{url_for('auth.logout')}}"
+              >Log out</a
+            >
+          </div>
+          <div class="sidebar-user-subtitle">{{current_user.role}}</div>
+        </div>
+      </div>
+    </div>
+    <ul class="sidebar-nav">
+      <li class="sidebar-header">Pages</li>
+      <li
+        class="sidebar-item {{ 'active' if page_title == 'Dashboard' else '' }}"
+      >
+        <a class="sidebar-link" href="{{url_for('views.dashboard')}}">
+          <i class="align-middle" data-feather="sliders"></i>
+          <span class="align-middle">Dashboard</span>
+        </a>
+      </li>
+      <li class="sidebar-item">
+        <a
+          data-bs-target="#pages"
+          data-bs-toggle="collapse"
+          class="sidebar-link collapsed"
+        >
+          <i class="align-middle" data-feather="layout"></i>
+          <span class="align-middle">Features</span>
+        </a>
+        <ul
+          id="pages"
+          class="sidebar-dropdown list-unstyled collapse"
+          data-bs-parent="#sidebar"
+        >
+          <li class="sidebar-item">
+            <a class="sidebar-link" href="#">Features 1</a>
+          </li>
+          <li class="sidebar-item">
+            <a class="sidebar-link" href="#">Features 2</a>
+          </li>
+        </ul>
+      </li>
+      <hr />
+      <li class="sidebar-header">Languages</li>
+      <li class="sidebar-item">
+        <div id="google_translate_element" class="sidebar-link"></div>
+      </li>
+    </ul>
+  </div>
+</nav>

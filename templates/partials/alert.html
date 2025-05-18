@@ -1,0 +1,14 @@
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+<script>
+    Swal.fire({
+        title: '<span class="bell fa fa-bell fa-2xl"></span>',
+        text: "{{ message|safe }}",
+        icon: "{{ category }}",
+        draggable: true
+    });
+</script>
+{% endfor %}
+{% endif %}
+{% endwith %}

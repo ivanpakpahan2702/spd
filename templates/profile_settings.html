@@ -1,0 +1,227 @@
+{% include "partials/main_head.html" %} {% include "partials/alert.html" %}
+<main class="content">
+    <div class="container-fluid p-0">
+        <h1 class="h3 mb-3">Settings</h1>
+        <div class="row">
+            <div class="col-md-3 col-xl-2">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Profile Settings</h5>
+                    </div>
+                    <div class="list-group list-group-flush" role="tablist">
+                        <a
+                            class="list-group-item list-group-item-action active"
+                            data-bs-toggle="list"
+                            href="#account"
+                            role="tab"
+                            aria-selected="true"
+                        >
+                            Account
+                        </a>
+                        <a
+                            class="list-group-item list-group-item-action"
+                            data-bs-toggle="list"
+                            href="#password"
+                            role="tab"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            Password
+                        </a>
+                        <a
+                            class="list-group-item list-group-item-action"
+                            data-bs-toggle="list"
+                            href="#"
+                            role="tab"
+                            aria-selected="false"
+                            tabindex="-1"
+                        >
+                            Delete account
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9 col-xl-10">
+                <div class="tab-content">
+                    <div class="tab-pane fade show active" id="account" role="tabpanel">
+                        <div class="card" style="overflow: auto">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Public info</h5>
+                            </div>
+                            <div class="card-body">
+                                <form method="post" action="{{url_for('settings_profile.update_public_info')}}" enctype="multipart/form-data">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <div class="mb-3">
+                                                <label class="form-label" for="inputUsername">
+                                                    Username
+                                                </label
+                        >
+                                                <input
+                                                    name="username"
+                                                    type="text"
+                                                    class="form-control"
+                                                    id="inputUsername"
+                                                    placeholder="Username"
+                                                    value="{{current_user.username or ''}}"
+                                                >
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label" for="inputUsername">
+                                                    Biography
+                                                </label
+                        >
+                                                <textarea
+                                                    name="biography"
+                                                    rows="2"
+                                                    class="form-control"
+                                                    id="inputBio"
+                                                    placeholder="Tell something about yourself"
+                                                >{{current_user.biography  or ''}}</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="text-center">
+                                                <img
+                                                    alt="Profile Pict"
+                                                    src="{{ url_for('static', filename='uploads/avatars/'+(current_user.profile_pict or 'default.jpg'))}}"
+                                                    class="rounded-circle img-responsive mt-2"
+                                                    width="128"
+                                                    height="128"
+                                                    id="profile_pic_frame"
+                                                >
+                                                <div class="mt-2">
+                                                    <input
+                                                        type="file"
+                                                        name="avatar"
+                                                        id="avatar"
+                                                        style="display: none"
+                                                        accept="image/*"
+                                                    >
+                                                    <label for="avatar" class="btn btn-primary" style="cursor: pointer">
+                                                        <i class="fas fa-upload"></i>
+                                                        Upload
+                                                    </label>
+                                                </div>
+                                                <small>
+                                                    For best results, use an image at least 128px by 128px
+                          in .jpg format
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">
+                                        Save changes
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Private info</h5>
+                            </div>
+                            <div class="card-body">
+                                <form method="post" action="{{url_for('settings_profile.update_private_info')}}">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="inputFullName">
+                                            Full Name
+                                        </label
+                      >
+                                        <input
+                                            name="name"
+                                            type="text"
+                                            class="form-control"
+                                            id="inputFulltName"
+                                            placeholder="Full name"
+                                            value="{{current_user.name or ''}}"
+                                        >
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="inputEmail4">Email</label>
+                                        <input
+                                            type="email"
+                                            class="form-control"
+                                            id="inputEmail4"
+                                            placeholder="Email"
+                                            name="email"
+                                            value="{{current_user.email}}"
+                                            disabled
+                                        >
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="inputAddress">Phone Number</label>
+                                        <input
+                                            type="number"
+                                            class="form-control"
+                                            id="inputPhone"
+                                            placeholder="Input your phone number"
+                                            name="phone_number"
+                                            value="{{current_user.phone_number or ''}}"
+                                        >
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">
+                                        Save changes
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="password" role="tabpanel">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Password</h5>
+                                <form>
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="inputPasswordCurrent">
+                                            Current password
+                                        </label
+                    >
+                                        <input type="password" class="form-control" id="inputPasswordCurrent">
+                                        <small>
+                                            <a href="#">Forgot your password?</a>
+                                        </small>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="inputPasswordNew">
+                                            New password
+                                        </label
+                    >
+                                        <input type="password" class="form-control" id="inputPasswordNew">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="inputPasswordNew2">
+                                            Verify password
+                                        </label
+                    >
+                                        <input type="password" class="form-control" id="inputPasswordNew2">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">
+                                        Save changes
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<script>
+  const avatarInput = document.getElementById("avatar");
+  const avatarPreview = document.getElementById("profile_pic_frame");
+  avatarInput.addEventListener("change", function () {
+    const file = this.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        avatarPreview.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+</script>
+{% include "partials/main_foot.html" %}
