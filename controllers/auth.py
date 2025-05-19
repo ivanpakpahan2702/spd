@@ -4,6 +4,7 @@ from datetime import timedelta, datetime
 from functools import wraps
 from controllers.helpers.database import *
 from controllers.helpers.password import *
+from controllers.log_activity import new_activity
 from flask import render_template, url_for, redirect, request, flash, Blueprint, session
 from extension import mail
 import secrets
@@ -66,6 +67,7 @@ def login():
                 user_obj = User(row_as_dict)
                 login_user(user_obj, remember=remember)
                 flash('Log in Succesfully', 'success')
+                new_activity("Logged in")
                 return redirect(url_for('views.dashboard'))
             else:
                 flash('Invalid email or password.', 'error')

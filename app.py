@@ -7,16 +7,17 @@ from extension import mail
 from controllers.views import views_blueprint
 from controllers.auth import auth_blueprint
 from controllers.settings_profile import settings_profile_blueprint
+from controllers.documents_admin import documents_admin_blueprint
 from flask_uploads import UploadSet, configure_uploads, IMAGES, ALL
 from controllers.settings_profile import avatars
 from config import Config
-
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 
 app.register_blueprint(auth_blueprint)
 app.register_blueprint(views_blueprint)
 app.register_blueprint(settings_profile_blueprint)
+app.register_blueprint(documents_admin_blueprint)
 
 app.config.from_object(Config)
 configure_uploads(app, [avatars])

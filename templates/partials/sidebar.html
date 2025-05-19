@@ -27,7 +27,8 @@
                             Help Center
                         </a>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="{{url_for('auth.logout')}}">Log out
+                        <a class="dropdown-item" href="{{url_for('auth.logout')}}">
+                            Log out
                         </a
             >
                     </div>
@@ -43,22 +44,32 @@
                     <span class="align-middle">Dashboard</span>
                 </a>
             </li>
-            <li class="sidebar-item">
+            <li class="sidebar-item {{ 'active' if page_title == 'Features' else '' }}">
                 <a data-bs-target="#pages" data-bs-toggle="collapse" class="sidebar-link collapsed">
                     <i class="align-middle" data-feather="layout"></i>
                     <span class="align-middle">Features</span>
                 </a>
                 <ul id="pages" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                     <li class="sidebar-item">
-                        <a class="sidebar-link" href="#">Features 1</a>
-                    </li>
-                    <li class="sidebar-item">
-                        <a class="sidebar-link" href="#">Features 2</a>
+                        {% if current_user.role == 'admin' %}
+                        <a class="sidebar-link" href="/documents_admin">Documents Admin</a>
+                        {%else%}
+                        <a class="sidebar-link" href="/upload_document">Upload Document</a>
+                        {% endif %}
                     </li>
                 </ul>
             </li>
             <hr>
-            <li class="sidebar-header">Languages</li>
+            {% if current_user.role == 'admin' %}
+            <li class="sidebar-header">Admin</li>
+            <li class="sidebar-item">
+                <a class="sidebar-link" href="/admin">
+                    <i class="align-middle" data-feather="users"></i>
+                    <span class="align-middle">Master Table</span>
+                </a>
+            </li>
+            <hr>
+            {% endif %}
             <li class="sidebar-item">
                 <div id="google_translate_element" class="sidebar-link"></div>
             </li>

@@ -5,6 +5,7 @@ from controllers.helpers.password import *
 from flask_uploads import UploadSet, IMAGES, ALL
 import os
 import uuid
+from controllers.log_activity import new_activity
 
 avatars = UploadSet('avatars', IMAGES)
 
@@ -27,7 +28,12 @@ def update_public_info():
         username = request.form.get('username')
         biography = request.form.get('biography')
         profile_pict = request.files.get('avatar')
-            
+        
+        if(username != current_user.username):
+            new_activity("updated username")
+        if(biography != current_user.biography):
+            new_activity("updated biography")
+        
         fields = {
             'username': username,
             'biography': biography
@@ -47,6 +53,7 @@ def update_public_info():
             try:
                 filename = get_random_filename(profile_pict.filename)
                 filename = avatars.save(profile_pict, name=filename)
+                new_activity("updated avatar")
                 update_fields.append('profile_pict = ?')
                 params.append(filename)
                 if current_user.profile_pict:
@@ -85,6 +92,10 @@ def update_private_info():
         name = request.form.get('name')
         phone_number = request.form.get('phone_number')
          
+        if(name != current_user.name):
+            new_activity("updated name")
+        if(phone_number != current_user.phone_number):
+            new_activity("updated phone number")     
         fields = {
             'name': name,
             'phone_number': phone_number

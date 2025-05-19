@@ -32,11 +32,32 @@ def init_db():
             db.commit()
         with get_db() as db:
             db.execute('''
-            CREATE TABLE activities (
+                CREATE TABLE activities (
                     id INTEGER PRIMARY KEY,
                     activity_name TEXT,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     user_id INTEGER REFERENCES users (id) ON DELETE NO ACTION ON UPDATE NO ACTION
                     );
                 ''')
+        with get_db() as db:
+            db.execute('''
+                CREATE TABLE schedule_task (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                    name TEXT, 
+                    description TEXT, 
+                    created_at TIMESTAMP, 
+                    due_date TIMESTAMP,
+                    token TEXT UNIQUE
+                    );
+                    ''')
+        with get_db() as db:
+            db.execute('''
+                CREATE TABLE task (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                    schedule_task_id INTEGER REFERENCES schedule_task (id) ON DELETE NO ACTION ON UPDATE NO ACTION, 
+                    user_id INTEGER REFERENCES users (id) ON DELETE NO ACTION ON UPDATE NO ACTION, 
+                    filename TEXT, 
+                    status TEXT, 
+                    created_at TIMESTAMP);
+                    ''')
             db.commit()
