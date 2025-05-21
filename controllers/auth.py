@@ -95,7 +95,7 @@ def forgot_password():
                 reset_link = url_for('auth.reset_password', user_id=user['id'], token=token, _external=True)
                 try:
                     msg = Message('Reset Password', sender='ivan.spd.com@gmail.com', recipients=[email])
-                    msg.html = render_template('email_template.html',reset_link=reset_link,current_user=current_user)
+                    msg.html = render_template('email_reset_pass_template.html',reset_link=reset_link,current_user=current_user)
                     mail.send(msg)
                     flash('Password reset link has been sent to the email address', 'success')
                 except Exception as e:

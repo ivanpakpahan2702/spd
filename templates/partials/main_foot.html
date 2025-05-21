@@ -4,49 +4,8 @@
 <script src="{{ url_for('static', filename='admin_kit/js/app.js')}}"></script>
 <script src="{{ url_for('static', filename='admin_kit/js/datatables.js')}}"></script>
 {%if current_user.role == "admin"%}
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    // Datatables Responsive
-    $("#datatables_scheduled_task").DataTable({
-      responsive: true,
-      ajax: {
-        url: "/get_scheduled_task",
-        dataSrc: 'data'
-        },
-      columns: [
-          { data: 'name' },
-          { data: 'description' },
-          { data: 'created_at' },
-          { data: 'due_date' },
-          { data: 'token' }
-      ]
-    }
-    );
-  });
-</script>
+<script src="{{ url_for('static', filename='js/documents_admin.js')}}"></script>
 {%endif%}
-<script>
-  document.addEventListener("DOMContentLoaded", function (event) {
-    setTimeout(function () {
-      if (localStorage.getItem("popState") !== "shown") {
-        window.notyf.open({
-          type: "success",
-          message:
-            'Get access to all 500+ components and 45+ pages with AdminKit PRO. <u><a class="text-white" href="https://adminkit.io/pricing" target="_blank">More info</a></u> 🚀',
-          duration: 10000,
-          ripple: true,
-          dismissible: false,
-          position: {
-            x: "left",
-            y: "bottom",
-          },
-        });
-
-        localStorage.setItem("popState", "shown");
-      }
-    }, 15000);
-  });
-</script>
 <script type="text/javascript">
     function googleTranslateElementInit() {
         new google.translate.TranslateElement({
@@ -93,5 +52,41 @@
   });
 </script>
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Select all forms on the page
+  var forms = document.querySelectorAll('form');
+
+  forms.forEach(function(form) {
+    form.addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevent default submission
+
+      // Show SweetAlert confirmation dialog
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "Do you want to submit this form?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, submit it!',
+        cancelButtonText: 'No, cancel'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // If confirmed, submit the form programmatically
+          form.submit();
+        }
+        // Else, do nothing, form stays unsubmitted
+      });
+    });
+  });
+});
+</script>
+<script>
+		document.addEventListener("DOMContentLoaded", function() {
+			flatpickr(".flatpickr-datetime", {
+				enableTime: true,
+				dateFormat: "Y-m-d H:i",
+			});
+		});
+</script>
 </body>
 </html>

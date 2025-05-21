@@ -14,4 +14,5 @@ class Config:
     MAIL_PASSWORD = 'gujyyyiqpflzfiuc'
 
     UPLOADED_AVATARS_DEST = 'static/uploads/avatars'
+    UPLOADED_FILES_DEST = 'static/uploads/files'
    

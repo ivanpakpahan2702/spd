@@ -11,11 +11,15 @@ views_blueprint = Blueprint('views', __name__)
 @views_blueprint.route('/dashboard', methods=['GET', 'POST'])
 @login_required
 def dashboard():
-    return render_template('index.html', current_user=current_user, page_title='Dashboard')
+    if request.method == 'GET':
+        session['csrf_token'] = secrets.token_hex(16)
+    return render_template('index.html', current_user=current_user, page_title='Dashboard', csrf_token = session['csrf_token'])
 
 @views_blueprint.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
+    if request.method == 'GET':
+        session['csrf_token'] = secrets.token_hex(16)
     activities_log = get_activity()
     return render_template('profile.html', current_user=current_user, activities_log=activities_log)
 
@@ -24,5 +28,4 @@ def profile():
 def settings():
     if request.method == 'GET':
         session['csrf_token'] = secrets.token_hex(16)
-    activities_log = get_activity()
     return render_template('profile_settings.html', current_user=current_user, csrf_token=session['csrf_token'])

@@ -1,0 +1,78 @@
+{% include "partials/header.html" %}
+<body
+    data-theme="default"
+    data-layout="fluid"
+    data-sidebar-position="left"
+    data-sidebar-layout="default"
+>
+    <main class="d-flex w-100 h-100" data-role="2" id="reset_page">
+        <div class="container d-flex flex-column">
+            <div class="row vh-100">
+                <div class="col-sm-10 col-md-8 col-lg-6 col-xl-5 mx-auto d-table h-100">
+                    <div class="d-table-cell align-middle">
+                        <div class="text-center mt-4">
+                            <h1 class="h2">Form Upload Documents</h1>
+                            <p class="lead">
+                                Please input your files.
+                            </p>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                {% include "partials/alert.html" %}
+                                <div class="m-sm-3">
+                                    <form method="post" enctype="multipart/form-data">
+                                        <input type="hidden" name="csrf_token" value="{{csrf_token}}">
+                                        <input type="hidden" name="token" value="{{data.token}}">
+                                        <div class="mb-3">
+                                            <label class="form-label">Task Name</label>
+                                            <p class="form-control form-control-lg"
+                                            >
+                                            {{data.name}}
+                                            </p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Task Description</label>
+                                            <p class="form-control form-control-lg"
+                                            >
+                                            {{data.description}}
+                                            </p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Created At</label>
+                                            <p class="form-control form-control-lg"
+                                            >
+                                            {{data.created_at}}
+                                            </p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Due Date</label>
+                                            <p class="form-control form-control-lg"
+                                            >
+                                            {{data.due_date}}
+                                            </p>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Files/Documents</label>
+                                            <div class="">
+                                                <input type="file" name="files" id="">
+                                            </div>
+                                        </div>
+                                        <div class="d-grid gap-2 mt-3">
+                                            <button class="btn btn-lg btn-primary" type="submit">Upload</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script>
+        const page_css = 'with_parameter'
+    </script>
+    <script src="{{ url_for('static', filename='admin_kit/js/app.js')}}"></script>
+    <script src="{{ url_for('static', filename='admin_kit/js/password_eye.js')}}"></script>
+</body>
+</html>
