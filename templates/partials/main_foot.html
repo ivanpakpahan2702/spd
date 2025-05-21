@@ -6,6 +6,9 @@
 {%if current_user.role == "admin"%}
 <script src="{{ url_for('static', filename='js/documents_admin.js')}}"></script>
 {%endif%}
+{%if current_user.role == "pegawai"%}
+<script src="{{ url_for('static', filename='js/documents_pegawai.js')}}"></script>
+{%endif%}
 <script type="text/javascript">
     function googleTranslateElementInit() {
         new google.translate.TranslateElement({

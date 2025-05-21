@@ -1,11 +1,42 @@
-{% include "partials/main_head.html" %}
-{% include "partials/alert.html" %}
+{% include "partials/main_head.html" %} {% include "partials/alert.html" %}
 <main class="content">
-    <div class="container-fluid p-0">
-        <h1 class="h3 mb-3">
-            <strong>Sistem</strong>
-            Pemberkasan Digital
-        </h1>
+  <div class="container-fluid p-0">
+    <h1 class="h3 mb-3">
+      <strong>Sistem</strong>
+      Pemberkasan Digital
+    </h1>
+    {%if current_user.role == "pegawai"%}
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-3 card-title">Lists Task</h5>
+          </div>
+          <div class="card-body">
+            <br />
+            <div class="m-1 pb-5" style="overflow: auto">
+              <table
+                id="datatables_all_task"
+                class="table table-striped dataTable no-footer"
+                style="width: 100%"
+              >
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Created At</th>
+                    <th>Due Date</th>
+                    <th>Token</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+    {%endif%}
+  </div>
 </main>
 {% include "partials/main_foot.html" %}

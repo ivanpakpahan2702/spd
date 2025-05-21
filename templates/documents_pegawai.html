@@ -1,78 +1,78 @@
-{% include "partials/header.html" %}
-<body
-    data-theme="default"
-    data-layout="fluid"
-    data-sidebar-position="left"
-    data-sidebar-layout="default"
->
-    <main class="d-flex w-100 h-100" data-role="2" id="reset_page">
-        <div class="container d-flex flex-column">
-            <div class="row vh-100">
-                <div class="col-sm-10 col-md-8 col-lg-6 col-xl-5 mx-auto d-table h-100">
-                    <div class="d-table-cell align-middle">
-                        <div class="text-center mt-4">
-                            <h1 class="h2">Form Upload Documents</h1>
-                            <p class="lead">
-                                Please input your files.
-                            </p>
-                        </div>
-                        <div class="card">
-                            <div class="card-body">
-                                {% include "partials/alert.html" %}
-                                <div class="m-sm-3">
-                                    <form method="post" enctype="multipart/form-data">
-                                        <input type="hidden" name="csrf_token" value="{{csrf_token}}">
-                                        <input type="hidden" name="token" value="{{data.token}}">
-                                        <div class="mb-3">
-                                            <label class="form-label">Task Name</label>
-                                            <p class="form-control form-control-lg"
-                                            >
-                                            {{data.name}}
-                                            </p>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Task Description</label>
-                                            <p class="form-control form-control-lg"
-                                            >
-                                            {{data.description}}
-                                            </p>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Created At</label>
-                                            <p class="form-control form-control-lg"
-                                            >
-                                            {{data.created_at}}
-                                            </p>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Due Date</label>
-                                            <p class="form-control form-control-lg"
-                                            >
-                                            {{data.due_date}}
-                                            </p>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Files/Documents</label>
-                                            <div class="">
-                                                <input type="file" name="files" id="">
-                                            </div>
-                                        </div>
-                                        <div class="d-grid gap-2 mt-3">
-                                            <button class="btn btn-lg btn-primary" type="submit">Upload</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+{% include "partials/main_head.html" %} {% include "partials/alert.html" %}
+<main class="content">
+  <div class="container-fluid p-0">
+    <div class="mb-3">
+      <h1 class="h3 d-inline align-middle">Task History</h1>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title"></h5>
+          </div>
+          <div class="card-body">
+            <br />
+            <div class="m-1 pb-5" style="overflow: auto">
+              <table
+                id="datatables_all_history_task"
+                class="table table-striped dataTable no-footer"
+                style="width: 100%"
+              >
+                <thead>
+                  <tr>
+                    <th>Token</th>
+                    <th>Filename</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+              </table>
             </div>
+          </div>
         </div>
-    </main>
-    <script>
-        const page_css = 'with_parameter'
-    </script>
-    <script src="{{ url_for('static', filename='admin_kit/js/app.js')}}"></script>
-    <script src="{{ url_for('static', filename='admin_kit/js/password_eye.js')}}"></script>
-</body>
-</html>
+      </div>
+    </div>
+  </div>
+</main>
+<!-- Modal -->
+<div
+  class="modal fade"
+  id="taskDetailModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Schedule Task</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">Status</label>
+          <input type="text" class="form-control" id="taskStatus" disabled />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Filename</label>
+          <input id="taskFilename" type="text" class="form-control" disabled />
+        </div>
+        <div class="mb-3">
+          <a class="btn btn-primary" id="downloadLink" role="button"
+            ><i class="fa-solid fa-download"></i
+          ></a>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% include "partials/main_foot.html" %}
