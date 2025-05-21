@@ -251,3 +251,100 @@ function deleteTask(token) {
     }
   });
 }
+
+$(document).ready(function () {
+  let table = $("#datatables_all_users").DataTable({
+    ajax: {
+      url: "/get_users",
+      dataSrc: "",
+    },
+    columns: [
+      { data: "id" },
+      { data: "name" },
+      { data: "email" },
+      { data: "role" },
+      {
+        data: null,
+        render: function (data, type, row) {
+          return `
+                        <button class="editBtn btn btn-warning" data-id="${row.id}">Edit</button>
+                        <button class="deleteBtn btn btn-danger" data-id="${row.id}">Delete</button>
+                    `;
+        },
+      },
+    ],
+  });
+
+  // Save button
+  $("#saveBtn").on("click", function () {
+    const id = $("#userId").val();
+    const name = $("#nameUsers").val();
+    const email = $("#emailUsers").val();
+    const role = $("#roleUsers").val();
+
+    if (id) {
+      // Update existing
+      $.ajax({
+        url: "/api/users/" + id,
+        type: "PUT",
+        contentType: "application/json",
+        data: JSON.stringify({ name: name, email: email, role: role }),
+        success: function () {
+          $("#userDetailModal").modal("hide");
+          table.ajax.reload();
+        },
+      });
+    } else {
+      // Add new
+      $.ajax({
+        url: "/api/users",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({ name: name, email: email, role: role }),
+        success: function () {
+          $("#userDetailModal").modal("hide");
+          table.ajax.reload();
+        },
+      });
+    }
+  });
+
+  // Edit button
+  $("#datatables_all_users tbody").on("click", ".editBtn", function () {
+    const rowData = table.row($(this).parents("tr")).data();
+    $("#userId").val(rowData.id);
+    $("#nameUsers").val(rowData.name);
+    $("#emailUsers").val(rowData.email);
+    $("#userDetailModal").modal("show");
+  });
+
+  // Delete button
+  $("#datatables_all_users tbody").on("click", ".deleteBtn", function () {
+    const id = $(this).data("id");
+
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Delete this user?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Proceed with AJAX delete
+        $.ajax({
+          url: "/api/users/" + id,
+          type: "DELETE",
+          success: function () {
+            table.ajax.reload();
+            Swal.fire("Deleted!", "The user has been deleted.", "success");
+          },
+          error: function () {
+            Swal.fire("Error!", "Failed to delete user.", "error");
+          },
+        });
+      }
+    });
+  });
+});

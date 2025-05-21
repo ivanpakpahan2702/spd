@@ -180,3 +180,47 @@ def delete_schedule_task(token):
 @login_required
 def details_schedule_task():
     pass
+
+@documents_admin_blueprint.route('/get_users', methods=['GET'])
+@login_required
+def get_users():
+    with get_db() as db:
+        cursor = db.execute('SELECT id,name,email,role FROM users')
+    db.commit()
+    users = cursor.fetchall()
+    print(users)
+    users_list = [dict(user) for user in users]
+    return jsonify(users_list)
+
+@documents_admin_blueprint.route('/master_admin', methods=['GET','POST'])
+@login_required
+def master_admin():
+    if request.method == 'GET':
+        session['csrf_token'] = secrets.token_hex(16)
+    return render_template('master_admin.html', current_user=current_user, csrf_token=session['csrf_token'], page_title='Master Admin')
+
+@documents_admin_blueprint.route('/api/users/<int:user_id>', methods=['PUT'])
+@login_required
+def update_user(user_id):
+    data = request.json
+    name = data.get('name')
+    email = data.get('email')
+    role = data.get('role')
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute('UPDATE users SET name = ?, email = ?, role = ? WHERE id = ?', (name, email, role, user_id))
+    db.commit()
+    if cursor.rowcount == 0:
+        return jsonify({'status': 'error', 'message': 'User not found'}), 404
+    return jsonify({'status': 'success'})
+
+# API to delete a user
+@documents_admin_blueprint.route('/api/users/<int:user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute('DELETE FROM users WHERE id = ?', (user_id,))
+    db.commit()
+    if cursor.rowcount == 0:
+        return jsonify({'status': 'error', 'message': 'User not found'}), 404
+    return jsonify({'status': 'success'})

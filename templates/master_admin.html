@@ -1,0 +1,85 @@
+{% include "partials/main_head.html" %} {% include "partials/alert.html" %}
+<main class="content">
+  <div class="container-fluid p-0">
+    <div class="mb-3">
+      <h1 class="h3 d-inline align-middle">Master Users Table</h1>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title"></h5>
+          </div>
+          <div class="card-body">
+            <br />
+            <div class="m-1 pb-5" style="overflow: auto">
+              <table
+                id="datatables_all_users"
+                class="table table-striped dataTable no-footer display"
+                style="width: 100%"
+              >
+                <thead>
+                  <tr>
+                    <th>User ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<!-- Modal -->
+<div
+  class="modal fade"
+  id="userDetailModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">User Detail</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" name="user_id" id="userId" />
+        <div class="mb-3">
+          <label class="form-label">Name</label>
+          <input type="text" class="form-control" id="nameUsers" />
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Email</label>
+          <input id="emailUsers" type="email" class="form-control" />
+        </div>
+        <div class="input-group mb-3">
+          <label class="input-group-text" for="inputGroupSelect01">Role</label>
+          <select class="form-select" id="roleUsers">
+            <option selected>Choose...</option>
+            <option value="admin">admin</option>
+            <option value="pegawai">pegawai</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button type="button" class="btn btn-primary" id="saveBtn">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% include "partials/main_foot.html" %}
