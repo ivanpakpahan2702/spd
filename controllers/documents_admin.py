@@ -44,8 +44,7 @@ def get_scheduled_task():
             'description': row[2],
             'created_at': row[3],
             'due_date': row[4],
-            'token': row[5],
-            'status': row[6]
+            'token': row[5]
         })
     return jsonify({'data': data})
 
@@ -178,8 +177,73 @@ def delete_schedule_task(token):
 
 @documents_admin_blueprint.route('/details_schedule_task/<token>', methods=['GET', 'POST'])
 @login_required
-def details_schedule_task():
-    pass
+def details_schedule_task(token):
+    if request.method == 'GET':
+        session['csrf_token'] = secrets.token_hex(16)
+    return render_template('detail_schedule_task.html',page_title='Features', current_user=current_user, csrf_token=session['csrf_token'],token=token)
+
+@documents_admin_blueprint.route('/get_task_users/<token>', methods=['GET'])
+@login_required
+def get_task_users(token):
+    sql = f"SELECT users.id, users.email, task.filename, task.status FROM users LEFT JOIN task ON users.id = task.user_id AND task.schedule_task_token = '{token}' WHERE users.role = 'pegawai';"
+    with get_db() as db:
+        cursor = db.execute(sql)
+    db.commit()
+    users = cursor.fetchall()
+    print(users)
+    users_list = [dict(user) for user in users]
+    return jsonify(users_list)
+
+@documents_admin_blueprint.route('/api/task/<token>/<int:user_id>', methods=['PUT'])
+@login_required
+def update_task_user(token,user_id):
+    data = request.json
+    status = data.get('status')
+    notif_variable_ = data.get('notif_variable_')
+    with get_db() as db:
+        is_exists_ = db.execute(f"SELECT * FROM task WHERE schedule_task_token = '{token}' AND user_id = {user_id}").fetchone()
+    if is_exists_ is None:
+        sql = f"INSERT INTO task (schedule_task_token, user_id, status) VALUES ('{token}','{user_id}','{status}');"
+        print(sql)
+        cursor = db.execute(sql)
+        db.commit()
+        if cursor.rowcount == 0:
+            return jsonify({'status': 'error', 'message': 'User not found'}), 404
+    else:
+        sql = f"UPDATE task SET status = '{status}' WHERE schedule_task_token = '{token}' AND user_id ={user_id}"
+        print(sql)
+        cursor = db.execute(sql)
+        db.commit()
+    if notif_variable_ == 1:
+        get_all_user_email_sql = f"SELECT email FROM users WHERE role='pegawai' AND id = {user_id}"
+        try:
+            with get_db() as db:
+                users_email = db.execute(get_all_user_email_sql).fetchall()
+            db.commit()
+        except Exception as e:
+            print(e)
+        
+        email_list = []
+        for i in users_email:
+            new_row = i[0]
+            email_list.append(new_row)
+        
+        print(email_list)
+        task_link = url_for('views.dashboard',_external=True)
+        msg = Message('Update Status', sender='ivan.spd.com@gmail.com', recipients=email_list)
+        msg.html = render_template('email_update_task_template.html',task_link=task_link)
+        mail.send(msg)
+        
+    if cursor.rowcount == 0:
+        return jsonify({'status': 'error', 'message': 'User not found'}), 404
+    return jsonify({'status': 'success'})
+
+@documents_admin_blueprint.route('/master_admin', methods=['GET','POST'])
+@login_required
+def master_admin():
+    if request.method == 'GET':
+        session['csrf_token'] = secrets.token_hex(16)
+    return render_template('master_admin.html', current_user=current_user, csrf_token=session['csrf_token'], page_title='Master Admin')
 
 @documents_admin_blueprint.route('/get_users', methods=['GET'])
 @login_required
@@ -191,13 +255,6 @@ def get_users():
     print(users)
     users_list = [dict(user) for user in users]
     return jsonify(users_list)
-
-@documents_admin_blueprint.route('/master_admin', methods=['GET','POST'])
-@login_required
-def master_admin():
-    if request.method == 'GET':
-        session['csrf_token'] = secrets.token_hex(16)
-    return render_template('master_admin.html', current_user=current_user, csrf_token=session['csrf_token'], page_title='Master Admin')
 
 @documents_admin_blueprint.route('/api/users/<int:user_id>', methods=['PUT'])
 @login_required
@@ -214,7 +271,6 @@ def update_user(user_id):
         return jsonify({'status': 'error', 'message': 'User not found'}), 404
     return jsonify({'status': 'success'})
 
-# API to delete a user
 @documents_admin_blueprint.route('/api/users/<int:user_id>', methods=['DELETE'])
 def delete_user(user_id):
     db = get_db()

@@ -22,7 +22,8 @@ document.addEventListener("DOMContentLoaded", function () {
         orderable: false,
         searchable: false,
         render: function (data, type, row) {
-          var url_view = "/details/" + encodeURIComponent(row.token);
+          var url_view =
+            "/details_schedule_task/" + encodeURIComponent(row.token);
           var url_edit = "javascript:editTask('" + row.token + "')";
           var url_delete = "javascript:deleteTask('" + row.token + "')";
           return (
@@ -332,7 +333,6 @@ $(document).ready(function () {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        // Proceed with AJAX delete
         $.ajax({
           url: "/api/users/" + id,
           type: "DELETE",
@@ -346,5 +346,106 @@ $(document).ready(function () {
         });
       }
     });
+  });
+});
+// ----------------------------------------------------------------------------------------------------------
+$(document).ready(function () {
+  let token = $("#hiddenToken").val();
+  let table = $("#datatables_detail_task").DataTable({
+    ajax: {
+      url: "/get_task_users/" + token,
+      dataSrc: "",
+    },
+    columns: [
+      { data: "id" },
+      { data: "email" },
+      { data: "filename" },
+      { data: "status" },
+      {
+        data: null,
+        render: function (data, type, row) {
+          return `
+                        <button class="editBtn btn btn-warning" data-id="${row.id}">Edit</button>
+                    `;
+        },
+      },
+    ],
+  });
+  // Save button
+  $("#TaskUpdate").on("click", function () {
+    const token = $("#hiddenToken").val();
+    const id = $("#User_ID").val();
+    const email = $("#User_Email").val();
+    const filename = $("#User_Filename").val();
+    const status = $("#statusTask").val();
+    const btn = document.getElementById("TaskUpdate");
+    // Save original button text
+    const originalText = btn.innerHTML;
+    btn.innerHTML = `
+    <div class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></div>
+    Loading...
+  `;
+    btn.disabled = true;
+
+    let send_schedule_notif_user = document.getElementById(
+      "send_schedule_notif_to_user"
+    );
+    var notif_variable_ = 0;
+    if (send_schedule_notif_user.checked) {
+      notif_variable_ = 1;
+    } else {
+      notif_variable_ = 0;
+    }
+
+    if (id) {
+      // Update existing
+      $.ajax({
+        url: "/api/task/" + token + "/" + id,
+        type: "PUT",
+        contentType: "application/json",
+        data: JSON.stringify({
+          status: status,
+          token: token,
+          id: id,
+          notif_variable_: notif_variable_,
+        }),
+        success: function () {
+          $("#taskDetailModal").modal("hide");
+          btn.innerHTML = originalText;
+          btn.disabled = false;
+          table.ajax.reload();
+          Swal.fire("Succes!", "Task updated successfully!", "success");
+        },
+      });
+    } else {
+      // Add new
+      $.ajax({
+        url: "/api/task",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({
+          status: status,
+          token: token,
+          id: id,
+          notif_variable_: notif_variable_,
+        }),
+        success: function () {
+          $("#taskDetailModal").modal("hide");
+          table.ajax.reload();
+          Swal.fire("Succes!", "Task updated successfully!", "success");
+        },
+      });
+    }
+  });
+
+  // Edit button
+  $("#datatables_detail_task").on("click", ".editBtn", function () {
+    const rowData = table.row($(this).parents("tr")).data();
+    $("#User_ID").val(rowData.id);
+    $("#User_Email").val(rowData.email);
+    $("#User_Filename").val(rowData.filename);
+    $("#taskDetailModal").modal("show");
+    const links = document.getElementById("TaskDownloadLink");
+    links.setAttribute("href", "/static/uploads/files/" + rowData.filename);
   });
 });
