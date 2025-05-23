@@ -259,8 +259,8 @@ $(document).ready(function () {
         data: null,
         render: function (data, type, row) {
           return `
-            <button class="editBtn btn btn-warning" data-id="${row.id}">Edit</button>
-            <button class="deleteBtn btn btn-danger" data-id="${row.id}">Delete</button>
+            <button class="editBtn btn btn-warning m-1" data-id="${row.id}">Edit</button>
+            <button class="deleteBtn btn btn-danger m-1" data-id="${row.id}">Delete</button>
           `;
         },
       },
@@ -284,6 +284,7 @@ $(document).ready(function () {
         success: function () {
           $("#userDetailModal").modal("hide");
           tableUsers.ajax.reload();
+          Swal.fire("Success!", "Succes to update user data.", "error");
         },
       });
     } else {
@@ -296,6 +297,7 @@ $(document).ready(function () {
         success: function () {
           $("#userDetailModal").modal("hide");
           tableUsers.ajax.reload();
+          Swal.fire("Error!", "Failed to update user.", "error");
         },
       });
     }

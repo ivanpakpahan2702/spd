@@ -1,5 +1,6 @@
 import sqlite3
 import os
+from controllers.helpers.password import *
 
 DATABASE = './database/spd.db'
 
@@ -29,6 +30,9 @@ def init_db():
                     updated_at TIMESTAMP       
                 );
                 ''')
+            db.commit()
+        with get_db() as db:
+            db.execute(f"INSERT INTO users (name,email,password_hash,role) VALUES ('Admin','admin_spd@mail.com','{hash_password('123')}','admin')")
             db.commit()
         with get_db() as db:
             db.execute('''
