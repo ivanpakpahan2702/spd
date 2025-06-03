@@ -52,6 +52,7 @@ document.addEventListener("DOMContentLoaded", function () {
       { data: "created_at" },
       { data: "due_date" },
       { data: "token" },
+      { data: "status" },
       {
         data: null,
         orderable: false,

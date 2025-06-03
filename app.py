@@ -1,53 +1,50 @@
-from flask import Blueprint, Flask, render_template, redirect, url_for, request, flash, session
-from flask_login import LoginManager, login_user, login_required, logout_user, current_user
-from controllers.helpers.database import *
-from controllers.helpers.password import *
+from flask import Blueprint, Flask, render_template, redirect, url_for
+from flask_login import LoginManager, current_user
+from controllers.helpers.database import get_db, init_db
 from models.users import User
 from extension import mail
 from controllers.views import views_blueprint
 from controllers.auth import auth_blueprint
-from controllers.settings_profile import settings_profile_blueprint
+from controllers.settings_profile import settings_profile_blueprint, avatars
 from controllers.documents_admin import documents_admin_blueprint
-from controllers.documents_pegawai import documents_pegawai_blueprint
-from flask_uploads import UploadSet, configure_uploads, IMAGES, ALL
-from controllers.settings_profile import avatars
-from controllers.documents_pegawai import files
+from controllers.documents_pegawai import documents_pegawai_blueprint, files
 from config import Config
+from flask_uploads import configure_uploads
 
+# Flask App Initialization
 app = Flask(__name__, template_folder='templates', static_folder='static')
+app.config.from_object(Config)
 
+# Register Blueprints
 app.register_blueprint(auth_blueprint)
 app.register_blueprint(views_blueprint)
 app.register_blueprint(settings_profile_blueprint)
 app.register_blueprint(documents_admin_blueprint)
 app.register_blueprint(documents_pegawai_blueprint)
 
-app.config.from_object(Config)
-configure_uploads(app, [avatars,files])
-
+# Configure Uploads & Mail
+configure_uploads(app, [avatars, files])
 mail.init_app(app)
+
+# Database Initialization
 init_db()
 
-# Setup Flask-Login
+# Flask-Login Setup
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'auth.login'
 
-# User loader callback
+# User Loader Callback
 @login_manager.user_loader
 def load_user(user_id):
     with get_db() as db:
         user = db.execute('SELECT * FROM users WHERE id = ?', (user_id,)).fetchone()
-        if user:
-            user_dict = {key: user[key] for key in user.keys()}
-            return User(user_dict)
-    return None
+        return User({key: user[key] for key in user.keys()}) if user else None
 
+# Custom Template Filters
 @app.template_filter('truncate_word')
 def truncate_word(s, length=10):
-    if len(s) > length:
-        return s[:length] + '...'
-    return s
+    return s[:length] + '...' if len(s) > length else s
 
 # Main Routes
 @app.route('/')
@@ -58,6 +55,7 @@ def index():
 def page_not_found(e):
     return render_template('404.html'), 404
 
+# Run Flask App
 if __name__ == '__main__':
     init_db()
-    app.run(host='0.0.0.0',port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)

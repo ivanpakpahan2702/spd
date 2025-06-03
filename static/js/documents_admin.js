@@ -310,6 +310,9 @@ $(document).ready(function () {
     $("#nameUsers").val(rowData.name);
     $("#emailUsers").val(rowData.email);
     $("#userDetailModal").modal("show");
+    if (rowData.role === "admin" || rowData.role === "pegawai") {
+      $("#roleUsers").val(rowData.role);
+    }
   });
 
   // Hapus user
@@ -423,11 +426,19 @@ $(document).ready(function () {
 
   // Edit task dari tabel
   $("#datatables_detail_task").on("click", ".editBtn", function () {
+    $("#statusTask").val("");
     const rowData = tableTaskDetails.row($(this).parents("tr")).data();
     $("#User_ID").val(rowData.id);
     $("#User_Email").val(rowData.email);
     $("#User_Filename").val(rowData.filename);
     $("#taskDetailModal").modal("show");
+    if (
+      rowData.status === "waiting" ||
+      rowData.status === "verified" ||
+      rowData.status === "rejected"
+    ) {
+      $("#statusTask").val(rowData.status);
+    }
     document
       .getElementById("TaskDownloadLink")
       .setAttribute("href", "/static/uploads/files/" + rowData.filename);

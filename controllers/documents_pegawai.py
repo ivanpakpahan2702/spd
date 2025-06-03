@@ -85,10 +85,12 @@ def upload_document(token):
         # Validasi deadline task
         try:
             if datetime.strptime(row['due_date'], "%Y-%m-%d %H:%M") < datetime.strptime(now, "%Y-%m-%d %H:%M"):
-                return abort(404)
+                flash('Token for upload document is expired!', 'error')
+                return redirect(url_for('views.dashboard'))
         except Exception as e:
             print(e)
-            return abort(404)
+            flash('Token for upload doecument is expired!', 'error')
+            return redirect(url_for('views.dashboard'))
 
     if request.method == 'POST':
         if request.form.get('csrf_token') != session.get('csrf_token'):
@@ -141,7 +143,7 @@ def upload_document(token):
                 flash('Successfully updated file', 'success')
                 return redirect(url_for('documents_pegawai.upload_document', token=token_form, _external=True))
             elif new_data and new_data['status'] == "verified" and (new_data['filename'] is None or new_data['filename'] is not None):
-                flash('Your file already got verified', 'success')
+                flash('Your file has already been uploaded and verified', 'error')
                 return redirect(url_for('documents_pegawai.upload_document', token=token_form, _external=True))
         except Exception as e:
             print(e)
@@ -220,7 +222,7 @@ def get_all_task():
         return abort(404)
     validate_ajax_csrf()
 
-    sql = "SELECT * FROM schedule_task ORDER BY created_at DESC;"
+    sql = f"SELECT st.name AS schedule_task_name, st.description, st.created_at, st.due_date, st.token, COALESCE(t.status, 'Not Uploaded Yet') AS status FROM  schedule_task st LEFT JOIN  task t ON st.token = t.schedule_task_token AND t.user_id = {current_user.id} ORDER BY  st.due_date DESC;"
     try:
         with get_db() as db:
             schedule_task = db.execute(sql).fetchall()
@@ -231,11 +233,12 @@ def get_all_task():
 
     data = [
         {
-            'name': row[1],
-            'description': row[2],
-            'created_at': row[3],
-            'due_date': row[4],
-            'token': row[5],
+            'name': row[0],
+            'description': row[1],
+            'created_at': row[2],
+            'due_date': row[3],
+            'token': row[4],
+            'status': row[5],
         }
         for row in schedule_task
     ]
