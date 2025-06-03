@@ -1,6 +1,20 @@
 document.addEventListener("DOMContentLoaded", function () {
   const csrfToken = $('meta[name="csrf-token"]').attr("content");
 
+  // Helper function to format datetime
+  function formatDateTime(datetime) {
+    const date = new Date(datetime);
+    return date.toLocaleString("id-ID", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    });
+  }
+
   // DataTable Scheduled Task
   $("#datatables_scheduled_task").DataTable({
     responsive: true,
@@ -15,8 +29,18 @@ document.addEventListener("DOMContentLoaded", function () {
     columns: [
       { data: "name" },
       { data: "description" },
-      { data: "created_at" },
-      { data: "due_date" },
+      {
+        data: "created_at",
+        render: function (data) {
+          return formatDateTime(data);
+        },
+      },
+      {
+        data: "due_date",
+        render: function (data) {
+          return formatDateTime(data);
+        },
+      },
       { data: "token" },
       {
         data: null,

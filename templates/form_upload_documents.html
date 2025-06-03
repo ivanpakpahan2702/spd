@@ -39,14 +39,14 @@
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Created At</label>
-                                            <p class="form-control form-control-lg"
+                                            <p class="form-control form-control-lg" id="created_at_form_upload"
                                             >
                                             {{data.created_at}}
                                             </p>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Due Date</label>
-                                            <p class="form-control form-control-lg"
+                                            <p class="form-control form-control-lg" id="due_date_form_upload"
                                             >
                                             {{data.due_date}}
                                             </p>
@@ -77,5 +77,24 @@
     </script>
     <script src="{{ url_for('static', filename='admin_kit/js/app.js')}}"></script>
     <script src="{{ url_for('static', filename='admin_kit/js/password_eye.js')}}"></script>
+    <script>
+        let rawDate1 = $("#created_at_form_upload").text();
+        $("#created_at_form_upload").text(formatDateTime(rawDate1));
+        let rawDate2 = $("#due_date_form_upload").text();
+        $("#due_date_form_upload").text(formatDateTime(rawDate2));
+        // Helper function to format datetime
+        function formatDateTime(datetime) {
+            const date = new Date(datetime);
+            return date.toLocaleString("id-ID", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: false,
+            });
+        }
+    </script>
 </body>
 </html>

@@ -49,8 +49,18 @@ document.addEventListener("DOMContentLoaded", function () {
     columns: [
       { data: "name" },
       { data: "description" },
-      { data: "created_at" },
-      { data: "due_date" },
+      {
+        data: "created_at",
+        render: function (data) {
+          return formatDateTime(data);
+        },
+      },
+      {
+        data: "due_date",
+        render: function (data) {
+          return formatDateTime(data);
+        },
+      },
       { data: "token" },
       { data: "status" },
       {
@@ -60,10 +70,10 @@ document.addEventListener("DOMContentLoaded", function () {
         render: function (data, type, row) {
           const url_view = "/upload_document/" + row.token;
           return `
-            <a class="btn btn-success m-1" href="${url_view}">
-              <i class="fa-solid fa-eye"></i>
-            </a>
-          `;
+                    <a class="btn btn-success m-1" href="${url_view}">
+                        <i class="fa-solid fa-eye"></i>
+                    </a>
+                `;
         },
       },
     ],
@@ -103,4 +113,18 @@ function showTask(token) {
         Swal.fire("Error!", "Failed to fetch task data.", "error");
       }
     });
+}
+
+// Helper function to format datetime
+function formatDateTime(datetime) {
+  const date = new Date(datetime);
+  return date.toLocaleString("id-ID", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  });
 }

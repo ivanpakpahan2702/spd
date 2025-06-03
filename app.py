@@ -15,6 +15,14 @@ from flask_uploads import configure_uploads
 app = Flask(__name__, template_folder='templates', static_folder='static')
 app.config.from_object(Config)
 
+@app.template_filter('format_datetime')
+def format_datetime(value, format='%Y-%m-%d %H:%M'):
+    return value.strftime(format)
+
+# Register the filter
+app.jinja_env.filters['format_datetime'] = format_datetime
+
+
 # Register Blueprints
 app.register_blueprint(auth_blueprint)
 app.register_blueprint(views_blueprint)
