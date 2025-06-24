@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
           const url_view = "/upload_document/" + row.token;
           return `
                     <a class="btn btn-success m-1" href="${url_view}">
-                        <i class="fa-solid fa-eye"></i>
+                        <i class="fa-solid fa-upload"></i>
                     </a>
                 `;
         },
@@ -82,9 +82,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Fungsi menampilkan detail task
 function showTask(token) {
-  fetch("/get_one_task/" + encodeURIComponent(token))
-    .then((res) => res.json())
-    .then((data) => {
+  $.ajax({
+    url: "/get_one_task/" + encodeURIComponent(token),
+    method: "GET",
+    dataType: "json",
+    success: function (data) {
       if (data.status === "success") {
         const task = data.task;
         const link = document.getElementById("downloadLink");
@@ -112,7 +114,11 @@ function showTask(token) {
       } else {
         Swal.fire("Error!", "Failed to fetch task data.", "error");
       }
-    });
+    },
+    error: function () {
+      Swal.fire("Error!", "Failed to fetch task data.", "error");
+    },
+  });
 }
 
 // Helper function to format datetime

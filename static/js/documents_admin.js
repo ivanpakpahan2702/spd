@@ -83,22 +83,21 @@ function submitCreateTask() {
   const notif_variable = send_schedule_notif.checked ? 1 : 0;
 
   if (name && created_at && due_date) {
-    fetch("/create_scheduled_task", {
+    $.ajax({
+      url: "/create_scheduled_task",
       method: "POST",
       headers: {
         "X-CSRF-Token": csrfToken,
-        "Content-Type": "application/json",
       },
-      body: JSON.stringify({
+      contentType: "application/json",
+      data: JSON.stringify({
         name,
         description,
         created_at,
         due_date,
         notif_variable,
       }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
+      success: function (data) {
         if (data.status === "success") {
           Swal.fire("Success!", "Task created successfully!", "success");
           $("#datatables_scheduled_task").DataTable().ajax.reload();
@@ -121,10 +120,11 @@ function submitCreateTask() {
         } else {
           Swal.fire("Error!", "Failed to create task!", "error");
         }
-      })
-      .catch(() => {
+      },
+      error: function () {
         Swal.fire("Error!", "Error creating task!", "error");
-      });
+      },
+    });
   } else {
     Swal.fire(
       "Error!",
@@ -138,9 +138,10 @@ function submitCreateTask() {
 
 // Fungsi edit task
 function editTask(token) {
-  fetch("/get_task/" + encodeURIComponent(token))
-    .then((res) => res.json())
-    .then((data) => {
+  $.ajax({
+    url: "/get_task/" + encodeURIComponent(token),
+    method: "GET",
+    success: function (data) {
       if (data.status === "success") {
         const task = data.task;
         document.getElementById("editToken").value = task.token;
@@ -156,7 +157,11 @@ function editTask(token) {
       } else {
         Swal.fire("Error!", "Failed to fetch task data.", "error");
       }
-    });
+    },
+    error: function () {
+      Swal.fire("Error!", "Failed to fetch task data.", "error");
+    },
+  });
 }
 
 // Fungsi simpan edit
@@ -179,22 +184,21 @@ function saveEdit() {
   const notif_variable = send_schedule_notif.checked ? 1 : 0;
 
   if (name && created_at && due_date) {
-    fetch("/edit_scheduled_task/" + encodeURIComponent(token), {
+    $.ajax({
+      url: "/edit_scheduled_task/" + encodeURIComponent(token),
       method: "POST",
       headers: {
         "X-CSRF-Token": csrfToken,
-        "Content-Type": "application/json",
       },
-      body: JSON.stringify({
+      contentType: "application/json",
+      data: JSON.stringify({
         name,
         description,
         created_at,
         due_date,
         notif_variable,
       }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
+      success: function (data) {
         if (data.status === "success") {
           Swal.fire("Updated!", "Task has been updated.", "success");
           $("#datatables_scheduled_task").DataTable().ajax.reload();
@@ -209,7 +213,13 @@ function saveEdit() {
         } else {
           Swal.fire("Error!", "Failed to update task.", "error");
         }
-      });
+      },
+      error: function () {
+        Swal.fire("Error!", "Failed to update task.", "error");
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      },
+    });
   } else {
     Swal.fire(
       "Error!",
@@ -244,25 +254,25 @@ function deleteTask(token) {
   }).then((result) => {
     if (result.isConfirmed) {
       const csrfToken = $('meta[name="csrf-token"]').attr("content");
-      fetch("/delete_schedule_task/" + encodeURIComponent(token), {
+      $.ajax({
+        url: "/delete_schedule_task/" + encodeURIComponent(token),
         method: "POST",
         headers: {
           "X-CSRF-Token": csrfToken,
-          "Content-Type": "application/json",
         },
-      })
-        .then((response) => response.json())
-        .then((data) => {
+        contentType: "application/json",
+        success: function (data) {
           if (data.status === "success") {
             Swal.fire("Deleted!", "Task has been deleted.", "success");
             $("#datatables_scheduled_task").DataTable().ajax.reload();
           } else {
             Swal.fire("Error!", "Failed to delete task.", "error");
           }
-        })
-        .catch(() => {
+        },
+        error: function () {
           Swal.fire("Error!", "Error deleting task.", "error");
-        });
+        },
+      });
     }
   });
 }
@@ -270,10 +280,13 @@ function deleteTask(token) {
 // DataTable Pengguna
 $(document).ready(function () {
   const tableUsers = $("#datatables_all_users").DataTable({
+    dom: "Bfrtip", // Show buttons at the top
+    buttons: ["copy", "csv", "excel", "pdf", "print"],
     ajax: {
       url: "/get_users",
       dataSrc: "",
     },
+    responsive: true,
     columns: [
       { data: "id" },
       { data: "name" },
@@ -308,7 +321,7 @@ $(document).ready(function () {
         success: function () {
           $("#userDetailModal").modal("hide");
           tableUsers.ajax.reload();
-          Swal.fire("Success!", "Succes to update user data.", "error");
+          Swal.fire("Success!", "Success to update user data.", "success");
         },
       });
     } else {
@@ -329,7 +342,11 @@ $(document).ready(function () {
 
   // Edit user
   $("#datatables_all_users tbody").on("click", ".editBtn", function () {
-    const rowData = tableUsers.row($(this).parents("tr")).data();
+    // Mendapatkan baris dengan benar walaupun di child row (responsive)
+    const tr = $(this).closest("tr");
+    const row = tableUsers.row(tr.hasClass("child") ? tr.prev() : tr);
+    const rowData = row.data();
+
     $("#userId").val(rowData.id);
     $("#nameUsers").val(rowData.name);
     $("#emailUsers").val(rowData.email);
@@ -341,7 +358,12 @@ $(document).ready(function () {
 
   // Hapus user
   $("#datatables_all_users tbody").on("click", ".deleteBtn", function () {
-    const id = $(this).data("id");
+    // Mendapatkan baris dengan benar walaupun di child row (responsive)
+    const tr = $(this).closest("tr");
+    const row = tableUsers.row(tr.hasClass("child") ? tr.prev() : tr);
+    const rowData = row.data();
+    const id = rowData.id;
+
     Swal.fire({
       title: "Are you sure?",
       text: "Delete this user?",
@@ -377,6 +399,7 @@ $(document).ready(function () {
       url: "/get_task_users/" + token,
       dataSrc: "",
     },
+    responsive: true,
     columns: [
       { data: "id" },
       { data: "email" },
@@ -451,7 +474,11 @@ $(document).ready(function () {
   // Edit task dari tabel
   $("#datatables_detail_task").on("click", ".editBtn", function () {
     $("#statusTask").val("");
-    const rowData = tableTaskDetails.row($(this).parents("tr")).data();
+    // Ambil baris utama jika child row (responsive)
+    const tr = $(this).closest("tr");
+    const row = tableTaskDetails.row(tr.hasClass("child") ? tr.prev() : tr);
+    const rowData = row.data();
+
     $("#User_ID").val(rowData.id);
     $("#User_Email").val(rowData.email);
     $("#User_Filename").val(rowData.filename);

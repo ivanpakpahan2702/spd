@@ -20,24 +20,24 @@
                 data-bs-target="#taskModal"
               >
                 <i class="fas fa-plus"></i>
-                New Scheduled Task
+                Buat Jadwal Tugas Baru
               </button>
             </div>
             <br />
             <div class="m-1 pb-5" style="overflow: auto">
               <table
                 id="datatables_scheduled_task"
-                class="table table-striped dataTable no-footer"
+                class="table table-striped dataTable no-footer table-bordered"
                 style="width: 100%"
               >
                 <thead>
                   <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Created At</th>
-                    <th>Due Date</th>
+                    <th>Nama</th>
+                    <th>Deskripsi</th>
+                    <th>Dibuat Pada</th>
+                    <th>Batas Waktu</th>
                     <th>Token</th>
-                    <th>Action</th>
+                    <th>Aksi</th>
                   </tr>
                 </thead>
               </table>
@@ -68,7 +68,7 @@
         </div>
         <div class="modal-body">
           <div class="mb-3">
-            <label class="form-label">Name</label>
+            <label class="form-label">Nama</label>
             <input
               type="text"
               class="form-control"
@@ -78,7 +78,7 @@
             />
           </div>
           <div class="mb-3">
-            <label class="form-label">Description</label>
+            <label class="form-label">Deskripsi</label>
             <input
               type="text"
               class="form-control"
@@ -87,7 +87,7 @@
             />
           </div>
           <div class="mb-3">
-            <label class="form-label">Start date</label>
+            <label class="form-label">Tanggal Mulai</label>
             <input
               id="taskCreatedAt"
               type="text"
@@ -97,7 +97,7 @@
             />
           </div>
           <div class="mb-3">
-            <label class="form-label">Due date</label>
+            <label class="form-label">Batas Waktu</label>
             <input
               name="due_date"
               type="text"
@@ -117,7 +117,7 @@
                 id="send_schedule_notif"
               />
               <label class="form-check-label" for="send_schedule_notif">
-                Send an email notification to all users (pegawai)
+                Kirim email notifikasi ke semua pengguna (pegawai)
               </label>
             </div>
           </div>

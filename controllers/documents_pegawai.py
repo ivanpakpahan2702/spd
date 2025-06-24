@@ -85,11 +85,11 @@ def upload_document(token):
         # Validasi deadline task
         try:
             if datetime.strptime(row['due_date'], "%Y-%m-%d %H:%M") < datetime.strptime(now, "%Y-%m-%d %H:%M"):
-                flash('Token for upload document is expired!', 'error')
+                flash('Tidak bisa unggah!, batas waktu telah berakhir', 'error')
                 return redirect(url_for('views.dashboard'))
         except Exception as e:
             print(e)
-            flash('Token for upload doecument is expired!', 'error')
+            flash('Token untuk unggah dokumen telah berakhir', 'error')
             return redirect(url_for('views.dashboard'))
 
     if request.method == 'POST':
@@ -101,7 +101,7 @@ def upload_document(token):
         token_form = request.form.get('token')
 
         if not files_name or files_name.filename == '':
-            flash('Must input the files!', 'error')
+            flash('Berkas unggah tidak boleh kosong!', 'error')
             return redirect(url_for('documents_pegawai.upload_document', token=token_form, _external=True))
 
         # Periksa status tugas
@@ -116,19 +116,19 @@ def upload_document(token):
 
         try:
             if new_data and new_data['status'] == "waiting" and new_data['filename'] is not None:
-                flash('You already upload documents, wait for verifying', 'error')
+                flash('Anda telah mengunggah berkas, tunggu untuk diverifikasi', 'error')
                 return redirect(url_for('documents_pegawai.upload_document', token=token_form, _external=True))
             elif new_data and new_data['status'] == "rejected" and (new_data['filename'] is None or new_data['filename'] is not None):
                 filename = get_random_filename(files_name.filename)
                 filename = files.save(files_name, name=filename)
-                sql_update = f"UPDATE task SET filename = '{filename}' WHERE schedule_task_token = '{token_form}' AND user_id = {current_user.id}"
+                sql_update = f"UPDATE task SET filename = '{filename}', status='waiting' WHERE schedule_task_token = '{token_form}' AND user_id = {current_user.id}"
                 with get_db() as db:
                     try:
                         db.execute(sql_update)
                         db.commit()
                     except Exception as e:
                         print(e)
-                flash('Successfully updated file', 'success')
+                flash('Sukses mengupdate berkas', 'success')
                 return redirect(url_for('documents_pegawai.upload_document', token=token_form, _external=True))
             elif new_data and new_data['status'] == "waiting" and new_data['filename'] is None:
                 filename = get_random_filename(files_name.filename)
@@ -140,10 +140,10 @@ def upload_document(token):
                         db.commit()
                     except Exception as e:
                         print(e)
-                flash('Successfully updated file', 'success')
+                flash('Sukses mengupdate berkas', 'success')
                 return redirect(url_for('documents_pegawai.upload_document', token=token_form, _external=True))
             elif new_data and new_data['status'] == "verified" and (new_data['filename'] is None or new_data['filename'] is not None):
-                flash('Your file has already been uploaded and verified', 'error')
+                flash('Anda tidak dapat mengunggah berkas baru, berkas sebelumnya telah diunggah dan diverifikasi', 'error')
                 return redirect(url_for('documents_pegawai.upload_document', token=token_form, _external=True))
         except Exception as e:
             print(e)
@@ -173,13 +173,13 @@ def upload_document(token):
 
         try:
             if datetime.strptime(row['due_date'], "%Y-%m-%d %H:%M") < datetime.strptime(now, "%Y-%m-%d %H:%M"):
-                flash('Task expired!', 'error')
+                flash('Batas waktu task telah berakhir!', 'error')
                 return redirect(url_for('views.dashboard'))
         except Exception as e:
             print(e)
             return abort(404)
 
-        flash('Successfully uploaded', 'success')
+        flash('Sukses mengunggah berkas', 'success')
         return redirect(url_for('documents_pegawai.upload_document', token=token, _external=True))
 
     return render_template(
@@ -222,7 +222,7 @@ def get_all_task():
         return abort(404)
     validate_ajax_csrf()
 
-    sql = f"SELECT st.name AS schedule_task_name, st.description, st.created_at, st.due_date, st.token, COALESCE(t.status, 'Not Uploaded Yet') AS status FROM  schedule_task st LEFT JOIN  task t ON st.token = t.schedule_task_token AND t.user_id = {current_user.id} ORDER BY  st.due_date DESC;"
+    sql = f"SELECT st.name AS schedule_task_name, st.description, st.created_at, st.due_date, st.token, COALESCE(t.status, 'Belum Mengunggah') AS status FROM  schedule_task st LEFT JOIN  task t ON st.token = t.schedule_task_token AND t.user_id = {current_user.id} ORDER BY  st.due_date DESC;"
     try:
         with get_db() as db:
             schedule_task = db.execute(sql).fetchall()

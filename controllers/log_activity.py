@@ -4,9 +4,9 @@ from controllers.helpers.database import *
 from controllers.helpers.password import *
 from datetime import datetime
 
-now = datetime.now()
-now = now.strftime("%d-%m-%Y %H:%M:%S")
 def new_activity(activity_name):
+    now = datetime.now()
+    now = now.strftime("%d-%m-%Y %H:%M:%S")
     sql = f"INSERT INTO activities (activity_name, user_id, created_at) VALUES ('{activity_name}', {current_user.id}, '{now}')"
     print(sql)
     try:

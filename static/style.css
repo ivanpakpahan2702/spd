@@ -1,0 +1,16 @@
+/* Pastikan border tetap saat responsive */
+table.dataTable.table-bordered > thead > tr > th,
+table.dataTable.table-bordered > tbody > tr > td {
+  border: .3px solid #dee2e6d4 !important;
+}
+
+/* Agar kolom tetap sejajar saat responsive */
+@media (max-width: 767.98px) {
+  table.dataTable {
+    width: 100% !important;
+  }
+  table.dataTable td,
+  table.dataTable th {
+    white-space: nowrap;
+  }
+}

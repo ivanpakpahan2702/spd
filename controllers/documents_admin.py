@@ -220,7 +220,7 @@ def details_schedule_task(token):
 @documents_admin_blueprint.route('/get_task_users/<token>', methods=['GET'])
 @login_required
 def get_task_users(token):
-    sql = ("SELECT users.id, users.email, COALESCE(NULLIF(task.filename, ''), 'no file') AS filename, COALESCE(NULLIF(task.status, ''), 'not uploaded yet') AS status FROM users LEFT JOIN task ON users.id = task.user_id AND task.schedule_task_token = ? WHERE users.role = 'pegawai';")
+    sql = ("SELECT users.id, users.email, COALESCE(NULLIF(task.filename, ''), 'no file') AS filename, COALESCE(NULLIF(task.status, ''), 'Belum Mengunggah') AS status FROM users LEFT JOIN task ON users.id = task.user_id AND task.schedule_task_token = ? WHERE users.role = 'pegawai';")
 
     with get_db() as db:
         cursor = db.execute(sql, (token,))

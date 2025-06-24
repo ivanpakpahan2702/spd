@@ -35,6 +35,97 @@ def init_db():
             db.execute(f"INSERT INTO users (name,email,password_hash,role) VALUES ('Admin','admin_spd@mail.com','{hash_password('123')}','admin')")
             db.commit()
         with get_db() as db:
+            db.execute(f"INSERT INTO users (name,email,password_hash,role) VALUES ('Pegawai','ivanpakpahanchrst@gmail.com','{hash_password('123')}','pegawai')")
+            db.commit()
+        with get_db() as db:
+            db.execute(f"INSERT INTO users (name,email,password_hash,role) VALUES ('Pegawai','ivanime027@gmail.com','{hash_password('123')}','pegawai')")
+            db.commit()
+        with get_db() as db:
+            db.execute(f"INSERT INTO users (name,email,password_hash,role) VALUES ('Pegawai','admin_spd2@mail.com','{hash_password('123')}','pegawai')")
+            db.commit()
+        with get_db() as db:
+            db.execute(f"INSERT INTO users (name,email,password_hash,role) VALUES ('Pegawai','admin_spd3@mail.com','{hash_password('123')}','pegawai')")
+            db.commit()
+        with get_db() as db:
+            db.execute(f"INSERT INTO users (name,email,password_hash,role) VALUES ('Pegawai','admin_spd4@mail.com','{hash_password('123')}','pegawai')")
+            db.commit()
+        with get_db() as db:
+            db.execute(f"INSERT INTO users (name,email,password_hash,role) VALUES ('Pegawai','admin_spd5@mail.com','{hash_password('123')}','pegawai')")
+            db.commit()
+        with get_db() as db:
+            db.execute(f"INSERT INTO users (name,email,password_hash,role) VALUES ('Pegawai','admin_spd6@mail.com','{hash_password('123')}','pegawai')")
+            db.commit()
+        with get_db() as db:
+            db.execute(f"INSERT INTO users (name,email,password_hash,role) VALUES ('Pegawai','admin_spd7@mail.com','{hash_password('123')}','pegawai')")
+            db.commit()
+        with get_db() as db:
+            db.execute(f"INSERT INTO users (name,email,password_hash,role) VALUES ('Pegawai','admin_spd8@mail.com','{hash_password('123')}','pegawai')")
+            db.commit()
+        with get_db() as db:
+            db.execute(f"INSERT INTO users (name,email,password_hash,role) VALUES ('Pegawai','admin_spd9@mail.com','{hash_password('123')}','pegawai')")
+            db.commit()
+        with get_db() as db:
+            db.execute(f"INSERT INTO users (name,email,password_hash,role) VALUES ('Pegawai','admin_spd10@mail.com','{hash_password('123')}','pegawai')")
+            db.commit()
+        with get_db() as db:
+            db.execute(f"INSERT INTO users (name,email,password_hash,role) VALUES ('Pegawai','admin_spd11@mail.com','{hash_password('123')}','pegawai')")
+            db.commit()
+        with get_db() as db:
+            db.execute(f"INSERT INTO users (name,email,password_hash,role) VALUES ('Pegawai','admin_spd12@mail.com','{hash_password('123')}','pegawai')")
+            db.commit()
+        with get_db() as db:
+            db.execute(f"INSERT INTO users (name,email,password_hash,role) VALUES ('Pegawai','admin_spd13@mail.com','{hash_password('123')}','pegawai')")
+            db.commit()
+        with get_db() as db:
+            db.execute(f"INSERT INTO users (name,email,password_hash,role) VALUES ('Pegawai','admin_spd14@mail.com','{hash_password('123')}','pegawai')")
+            db.commit()
+        with get_db() as db:
+            db.execute(f"INSERT INTO users (name,email,password_hash,role) VALUES ('Pegawai','admin_spd15@mail.com','{hash_password('123')}','pegawai')")
+            db.commit()
+        with get_db() as db:
+            db.execute(f"INSERT INTO users (name,email,password_hash,role) VALUES ('Pegawai','admin_spd16@mail.com','{hash_password('123')}','pegawai')")
+            db.commit()
+        with get_db() as db:
+            db.execute(f"INSERT INTO users (name,email,password_hash,role) VALUES ('Pegawai','admin_spd17@mail.com','{hash_password('123')}','pegawai')")
+            db.commit()
+        with get_db() as db:
+            db.execute(f"INSERT INTO users (name,email,password_hash,role) VALUES ('Pegawai','admin_spd18@mail.com','{hash_password('123')}','pegawai')")
+            db.commit()
+        with get_db() as db:
+            db.execute(f"INSERT INTO users (name,email,password_hash,role) VALUES ('Pegawai','admin_spd19@mail.com','{hash_password('123')}','pegawai')")
+            db.commit()
+        with get_db() as db:
+            db.execute(f"INSERT INTO users (name,email,password_hash,role) VALUES ('Pegawai','admin_spd20@mail.com','{hash_password('123')}','pegawai')")
+            db.commit()
+        with get_db() as db:
+            db.execute(f"INSERT INTO users (name,email,password_hash,role) VALUES ('Pegawai','admin_spd21@mail.com','{hash_password('123')}','pegawai')")
+            db.commit()
+        with get_db() as db:
+            db.execute(f"INSERT INTO users (name,email,password_hash,role) VALUES ('Pegawai','admin_spd22@mail.com','{hash_password('123')}','pegawai')")
+            db.commit()
+        with get_db() as db:
+            db.execute(f"INSERT INTO users (name,email,password_hash,role) VALUES ('Pegawai','admin_spd23@mail.com','{hash_password('123')}','pegawai')")
+            db.commit()
+        with get_db() as db:
+            db.execute(f"INSERT INTO users (name,email,password_hash,role) VALUES ('Pegawai','admin_spd24@mail.com','{hash_password('123')}','pegawai')")
+            db.commit()
+        with get_db() as db:
+            db.execute(f"INSERT INTO users (name,email,password_hash,role) VALUES ('Pegawai','admin_spd25@mail.com','{hash_password('123')}','pegawai')")
+            db.commit()
+        with get_db() as db:
+            db.execute(f"INSERT INTO users (name,email,password_hash,role) VALUES ('Pegawai','admin_spd26@mail.com','{hash_password('123')}','pegawai')")
+            db.commit()
+        with get_db() as db:
+            db.execute(f"INSERT INTO users (name,email,password_hash,role) VALUES ('Pegawai','admin_spd27@mail.com','{hash_password('123')}','pegawai')")
+            db.commit()
+        with get_db() as db:
+            db.execute(f"INSERT INTO users (name,email,password_hash,role) VALUES ('Pegawai','admin_spd28@mail.com','{hash_password('123')}','pegawai')")
+            db.commit()
+        with get_db() as db:
+            db.execute(f"INSERT INTO users (name,email,password_hash,role) VALUES ('Pegawai','admin_spd29@mail.com','{hash_password('123')}','pegawai')")
+            db.commit()
+
+        with get_db() as db:
             db.execute('''
                 CREATE TABLE activities (
                     id INTEGER PRIMARY KEY,
